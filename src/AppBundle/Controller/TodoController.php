@@ -126,29 +126,40 @@ class TodoController extends Controller
     public function trashAction(Request $request)
     {
         //à faire
-
+        /** @var Todo $todo */
         $todo = $this
             ->getDoctrine()
             ->getRepository('AppBundle:Todo')
-            ->findBy(array(
-                'trashed'=> 1,
-                'id'=>$request->attributes->get('todoId')
+            ->findOneBy(array(
+               'id'=>$request->attributes->get('todoId')
             ));
+
+        $todo->setTrashed(true);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($todo);
+        $em->flush();
 
         return $this->redirectToRoute('todo_trashList');
     }
 
-    public function trashListAction(Request $request)
+    public function trashListAction()
     {
 
         $todos = $this
             ->getDoctrine()
             ->getRepository('AppBundle:Todo')
-            ->findBy(['trashed' => false], ['date' => 'DESC']);
+            ->findBy(['trashed' => true], ['date' => 'DESC']);
 
         $form = $this
-            ->createForm(new TodoType(), $todo, [
-                'action' => $formAction,
+            ->createForm(new TodoType(), null, [
+                'action' => $this->generateUrl('todo_add'),
+            ])
+            ->add('submit', 'submit', [
+                'label' => 'Modifier',
+                'attr'  => [
+                    'class' => 'btn btn-warning'
+                ]
             ]);
 
         return $this->render('AppBundle:Todo:_trashed_list.html.twig', [
