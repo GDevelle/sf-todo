@@ -21,4 +21,4 @@ todo_trash:
 todo_trashList:
     path:     /trash
     defaults:
-        _controller: AppBundle:Todo:index
+        _controller: AppBundle:Todo:trashList

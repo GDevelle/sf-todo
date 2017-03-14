@@ -135,22 +135,26 @@ class TodoController extends Controller
                 'id'=>$request->attributes->get('todoId')
             ));
 
-        return $this->redirectToRoute('todo_trash');
+        return $this->redirectToRoute('todo_trashList');
     }
 
-    public function trashList(Request $request)
+    public function trashListAction(Request $request)
     {
 
-        $todo = $this
+        $todos = $this
             ->getDoctrine()
             ->getRepository('AppBundle:Todo')
-            ->findBy(array(
-                'trashed'=> 1,
-                'id'=>$request->attributes->get('todoId')
-            ));
+            ->findBy(['trashed' => false], ['date' => 'DESC']);
+
+        $form = $this
+            ->createForm(new TodoType(), $todo, [
+                'action' => $formAction,
+            ]);
 
         return $this->render('AppBundle:Todo:_trashed_list.html.twig', [
-            'todos' => $todos]);
+            'todos' => $todos,
+            'form' => $form->createView(),
+        ]);
     }
 
 }

@@ -19,8 +19,8 @@
         </div>
     </div>
     <div class="container">
-
+        {% block list %}
         {% include "AppBundle:Todo:_default_list.html.twig" with {'todos' :todos} %}
-
+        {% endblock %}
     </div>
 {% endblock %}
